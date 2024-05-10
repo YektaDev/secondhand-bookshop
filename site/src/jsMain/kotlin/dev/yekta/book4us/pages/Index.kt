@@ -43,10 +43,7 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
-import org.jetbrains.compose.web.dom.Col
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Img
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.*
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
 val HeroContainerStyle by ComponentStyle {
@@ -119,23 +116,27 @@ fun HomePage() {
                                 .borderRadius(1.5.cssRem)
                                 .backgroundColor(Colors.White)
                                 .padding(all = 1.cssRem)
-                                .gap(1.cssRem)
-                                .width(30.cssRem)
+                                .gap(1.5.cssRem)
+                                .width(35.cssRem)
                         ) {
+                            book.description
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Img(src = book.coverImage, attrs = Modifier.borderRadius(1.cssRem).width(6.cssRem).toAttrs())
+                                Img(src = book.coverImage, attrs = Modifier.borderRadius(1.cssRem).width(8.cssRem).height(12.cssRem).toAttrs())
                                 Column(Modifier.padding(left = 1.cssRem)) {
                                     SpanText(
                                         book.title,
                                         Modifier
                                             .fontWeight(500)
                                             .fontSize(1.25.cssRem)
-                                            .padding(bottom = 1.cssRem)
                                             .textShadow(1.px, 1.px, blurRadius = 0.08.cssRem, color = Colors.Gray.copy(alpha = 50))
                                             .fillMaxWidth()
                                     )
-                                    SpanText(book.author, Modifier.fillMaxWidth())
-                                    SpanText(book.publicationYear, Modifier.fillMaxWidth())
+                                    Span(Modifier.fillMaxWidth().padding(topBottom =  1.cssRem).toAttrs()) {
+                                        SpanText(book.author,Modifier.color(Colors.CornflowerBlue))
+                                        SpanText(" - ",Modifier.color(Colors.Gray.copy(alpha = 100)))
+                                        SpanText(book.publicationYear, Modifier.color(Colors.Gray.copy(alpha = 150)))
+                                    }
+                                    SpanText(book.description, Modifier.fillMaxWidth())
                                 }
                             }
                         }
