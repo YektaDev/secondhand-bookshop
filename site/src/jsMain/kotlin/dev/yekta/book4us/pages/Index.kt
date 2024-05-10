@@ -3,9 +3,7 @@ package dev.yekta.book4us.pages
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.css.StyleVariable
-import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -41,7 +39,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
+import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Text
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
 val HeroContainerStyle by ComponentStyle {
@@ -96,7 +97,7 @@ fun HomePage() {
             is BookLoadingState.Error -> {
                 Div {
                     Text((state as? Error)?.message?.let { "Error: $it" }
-                        ?: "There was an issue with getting the books")
+                        ?: "There was an error loading the books. Please check your connection and try again.")
                 }
             }
 

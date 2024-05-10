@@ -10,7 +10,7 @@ import kotlinx.serialization.json.Json
 object API {
     private const val API_URL = "https://freetestapi.com/api/v1/books"
 
-    val client = HttpClient()
+    private val client = HttpClient()
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -24,6 +24,6 @@ object API {
         json.decodeFromString<List<Book>>(body)
     }.fold(
         onSuccess = { BookLoadingState.Success(it) },
-        onFailure = { BookLoadingState.Error("Failed to load books from the server \uD83D\uDE41 (${it.message})") }
+        onFailure = { BookLoadingState.Error("Failed to load books from the server \uD83D\uDE41\nPlease check your connection and try again\n(${it.message})") }
     )
 }
