@@ -3,6 +3,7 @@ package dev.yekta.book4us.pages
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.varabyte.kobweb.compose.css.OverflowWrap
 import com.varabyte.kobweb.compose.css.StyleVariable
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -39,10 +40,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.css.fr
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.vh
+import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
@@ -118,22 +116,49 @@ fun HomePage() {
                                 .padding(all = 1.cssRem)
                                 .gap(1.5.cssRem)
                                 .width(35.cssRem)
+                                .weight(1)
                         ) {
-                            book.description
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Img(src = book.coverImage, attrs = Modifier.borderRadius(1.cssRem).width(8.cssRem).height(12.cssRem).toAttrs())
+                                Img(
+                                    src = book.coverImage,
+                                    attrs = Modifier.borderRadius(1.cssRem).width(8.cssRem).height(12.cssRem).toAttrs()
+                                )
                                 Column(Modifier.padding(left = 1.cssRem)) {
                                     SpanText(
                                         book.title,
                                         Modifier
                                             .fontWeight(500)
                                             .fontSize(1.25.cssRem)
-                                            .textShadow(1.px, 1.px, blurRadius = 0.08.cssRem, color = Colors.Gray.copy(alpha = 50))
+                                            .textShadow(
+                                                1.px,
+                                                1.px,
+                                                blurRadius = 0.08.cssRem,
+                                                color = Colors.Gray.copy(alpha = 50)
+                                            )
                                             .fillMaxWidth()
+                                            .padding(right = 1.cssRem, bottom = 1.cssRem)
                                     )
-                                    Span(Modifier.fillMaxWidth().padding(topBottom =  1.cssRem).toAttrs()) {
-                                        SpanText(book.author,Modifier.color(Colors.CornflowerBlue))
-                                        SpanText(" - ",Modifier.color(Colors.Gray.copy(alpha = 100)))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.fillMaxWidth(),
+                                    ) {
+                                        book.genre.forEach {
+                                            SpanText(
+                                                it,
+                                                Modifier
+                                                    .margin(leftRight = .25.cssRem)
+                                                    .fontSize(0.7.cssRem)
+                                                    .backgroundColor(Colors.MediumPurple)
+                                                    .borderRadius(.5.cssRem)
+                                                    .color(Colors.White)
+                                                    .padding(leftRight = .25.cssRem)
+                                                    .flexWrap(FlexWrap.Nowrap)
+                                            )
+                                        }
+                                    }
+                                    Span(Modifier.fillMaxWidth().padding(topBottom = 1.cssRem).toAttrs()) {
+                                        SpanText(book.author, Modifier.color(Colors.CornflowerBlue))
+                                        SpanText(" - ", Modifier.color(Colors.Gray.copy(alpha = 100)))
                                         SpanText(book.publicationYear, Modifier.color(Colors.Gray.copy(alpha = 150)))
                                     }
                                     SpanText(book.description, Modifier.fillMaxWidth())
