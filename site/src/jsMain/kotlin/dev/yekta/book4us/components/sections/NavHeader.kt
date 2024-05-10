@@ -102,7 +102,7 @@ enum class SideMenuState {
 fun NavHeader() {
     Box(NavHeaderStyle.toModifier()) {
         Image(
-            "/logo.png",
+            "/logo.svg",
             "Book4Us Logo",
             Modifier.margin(top = .5.cssRem).height(4.5.cssRem).display(DisplayStyle.Block)
         )
