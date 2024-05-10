@@ -3,6 +3,7 @@ package dev.yekta.book4us.components.sections
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.browser.dom.ElementTarget
 import com.varabyte.kobweb.compose.css.functions.clamp
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.foundation.layout.Spacer
@@ -99,33 +100,42 @@ enum class SideMenuState {
 
 @Composable
 fun NavHeader() {
-    Row(NavHeaderStyle.toModifier(), verticalAlignment = Alignment.CenterVertically) {
-        Image("/logo.png", "Book4Us Logo", Modifier.height(2.cssRem).display(DisplayStyle.Block))
-
-        Spacer()
-
-        Row(Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD), verticalAlignment = Alignment.CenterVertically) {
-            MenuItems()
-            ColorModeButton()
-        }
-
+    Box(NavHeaderStyle.toModifier()) {
+        Image(
+            "/logo.png",
+            "Book4Us Logo",
+            Modifier.margin(top = .5.cssRem).height(4.5.cssRem).display(DisplayStyle.Block)
+        )
         Row(
-            Modifier
-                .fontSize(1.5.cssRem)
-                .gap(1.cssRem)
-                .displayUntil(Breakpoint.MD),
-            verticalAlignment = Alignment.CenterVertically
+            Modifier.fillMaxWidth().margin(top = 1.cssRem).padding(right = 1.cssRem),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            var menuState by remember { mutableStateOf(SideMenuState.CLOSED) }
+            Spacer()
+            Row(
+                Modifier.gap(1.5.cssRem).displayIfAtLeast(Breakpoint.MD),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MenuItems()
+            }
 
-            HamburgerButton(onClick = { menuState = SideMenuState.OPEN })
+            Row(
+                Modifier
+                    .fontSize(1.5.cssRem)
+                    .gap(1.cssRem)
+                    .displayUntil(Breakpoint.MD),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                var menuState by remember { mutableStateOf(SideMenuState.CLOSED) }
 
-            if (menuState != SideMenuState.CLOSED) {
-                SideMenu(
-                    menuState,
-                    close = { menuState = menuState.close() },
-                    onAnimationEnd = { if (menuState == SideMenuState.CLOSING) menuState = SideMenuState.CLOSED }
-                )
+                HamburgerButton(onClick = { menuState = SideMenuState.OPEN })
+
+                if (menuState != SideMenuState.CLOSED) {
+                    SideMenu(
+                        menuState,
+                        close = { menuState = menuState.close() },
+                        onAnimationEnd = { if (menuState == SideMenuState.CLOSING) menuState = SideMenuState.CLOSED }
+                    )
+                }
             }
         }
     }
