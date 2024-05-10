@@ -116,7 +116,7 @@ fun HomePage() {
                                     spreadRadius = .05.cssRem,
                                     color = Colors.Black.copy(alpha = 15)
                                 )
-                                .borderRadius(1.cssRem)
+                                .borderRadius(1.5.cssRem)
                                 .backgroundColor(Colors.White)
                                 .padding(all = 1.cssRem)
                                 .gap(1.cssRem)
@@ -128,8 +128,10 @@ fun HomePage() {
                                     SpanText(
                                         book.title,
                                         Modifier
+                                            .fontWeight(500)
+                                            .fontSize(1.25.cssRem)
                                             .padding(bottom = 1.cssRem)
-                                            .textShadow(1.px, 1.px, blurRadius = 0.125.cssRem, color = Colors.Gray)
+                                            .textShadow(1.px, 1.px, blurRadius = 0.08.cssRem, color = Colors.Gray.copy(alpha = 50))
                                             .fillMaxWidth()
                                     )
                                     SpanText(book.author, Modifier.fillMaxWidth())
