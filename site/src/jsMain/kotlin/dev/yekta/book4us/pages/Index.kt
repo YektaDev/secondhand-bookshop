@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.varabyte.kobweb.compose.css.StyleVariable
+import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
@@ -41,7 +43,9 @@ import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.fr
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
+import org.jetbrains.compose.web.dom.Col
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Text
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
@@ -102,10 +106,36 @@ fun HomePage() {
             }
 
             is Success -> {
-                Column {
+                Column(Modifier.gap(1.cssRem)) {
                     (state as Success).books.forEach { book ->
-                        Div {
-                            Text("Book: ${book.title}")
+                        Box(
+                            modifier = Modifier
+                                .boxShadow(
+                                    offsetY = 0.125.cssRem,
+                                    blurRadius = 0.25.cssRem,
+                                    spreadRadius = .05.cssRem,
+                                    color = Colors.Black.copy(alpha = 15)
+                                )
+                                .borderRadius(1.cssRem)
+                                .backgroundColor(Colors.White)
+                                .padding(all = 1.cssRem)
+                                .gap(1.cssRem)
+                                .width(30.cssRem)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Img(src = book.coverImage, attrs = Modifier.borderRadius(1.cssRem).width(6.cssRem).toAttrs())
+                                Column(Modifier.padding(left = 1.cssRem)) {
+                                    SpanText(
+                                        book.title,
+                                        Modifier
+                                            .padding(bottom = 1.cssRem)
+                                            .textShadow(1.px, 1.px, blurRadius = 0.125.cssRem, color = Colors.Gray)
+                                            .fillMaxWidth()
+                                    )
+                                    SpanText(book.author, Modifier.fillMaxWidth())
+                                    SpanText(book.publicationYear, Modifier.fillMaxWidth())
+                                }
+                            }
                         }
                     }
                 }
