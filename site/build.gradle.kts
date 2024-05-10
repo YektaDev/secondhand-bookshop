@@ -33,6 +33,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
             implementation("io.ktor:ktor-client-core:2.3.10")
         }
 
@@ -44,6 +45,7 @@ kotlin {
             // Uncomment the following if you want access to a large set of font-awesome icons:
             // implementation(libs.silk.icons.fa)
             implementation(libs.kobwebx.markdown)
+            implementation(libs.kotlinx.coroutines.core.js)
             implementation("io.ktor:ktor-client-js:2.3.10")
         }
 
