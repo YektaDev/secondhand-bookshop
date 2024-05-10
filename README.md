@@ -1,7 +1,71 @@
+# Book4Us
+
+Welcome to Book4Us, an asynchronous second hand book shop that showcases the power of Kotlin and modern web
+technologies. This project demonstrates the use of a different asynchronous programming technique than the usual
+techniques used in JavaScript-based technologies. This technique is using Coroutines. It's extremely powerful and keeps
+the code simple.
+
+## Project Overview
+
+Book4Us is built using a combination of cutting-edge technologies:
+
++ **Ktor Client:** A powerful HTTP client for Kotlin that enables seamless communication with the remote server to fetch
+  book data.
++ **Kotlin Serialization:** A modern serialization library for Kotlin that simplifies the parsing and serialization of
+  JSON data.
++ **Kotlin Coroutines:** A concurrency framework for Kotlin that allows for efficient and expressive asynchronous
+  programming.
++ **Compose HTML:** A port of Compose Multiplatform that targets HTML as the output, enabling the creation of dynamic
+  and interactive web pages.
++ **Kobweb:** A modern, Kotlin-based web framework that leverages the power of Compose HTML for building web
+  applications.
+
+## Key Features
+
+### Fetching Data
+
+Book4Us uses suspending functions inside coroutines to fetch book catalog data from a remote server. The application
+utilizes Ktor Client, a powerful HTTP client for Kotlin, to make asynchronous network requests and retrieve the JSON
+data. By leveraging Kotlin Coroutines, Book4Us ensures that the UI remains responsive during the data fetching process,
+providing a seamless user experience.
+
+### Parsing and Displaying Data
+
+Once the book catalog data is fetched from the remote server, Book4Us efficiently parses the JSON data using Kotlinx
+Serialization. The parsed data is then dynamically rendered on the webpage using Compose HTML. The application
+generates the necessary HTML elements to display the book information in a visually appealing and user-friendly manner.
+
+### Error Handling
+
+Book4Us places a strong emphasis on robust error handling. Each asynchronous method is equipped with appropriate error
+handling mechanisms to gracefully handle network errors or parsing failures, as a part of the return type. In case of
+any issues, informative error messages are displayed to the user, ensuring a smooth and uninterrupted user experience.
+
+### User Interface
+
+The user interface of Book4Us is designed with simplicity and intuitiveness in mind. The application features a clean
+and modern design, making it easy for users to navigate and explore the book catalog. The Home page serves as the main
+hub, presenting a list of books with relevant information such as title, author, and genres. In the future, Users will
+be able to effortlessly sort the books by title or price to find their desired books quickly.
+
+### Documentation
+
+Comprehensive documentation is provided right here, to guide developers through the implementation details of Book4Us.
+
+## Pages
+
+The project consists of the following main pages:
+
++ **Home Page:** The landing page of Book4Us, where users can view the list of books.
+
++ **About Page:** Provides information about the Book4Us project, its purpose, and the technologies used.
+
+## How to Use
+
 This project uses the [Kobweb](https://github.com/varabyte/kobweb) framework under the hood, which is a modern,
 Kotlin-based web framework that leverages the power of Compose HTML for building web applications.
 
-## Development Setup
+### Development Setup
 
 First, run the development server by typing the following command in a terminal under the `site` folder:
 
@@ -16,7 +80,7 @@ You can use any editor you want for the project, but using **IntelliJ IDEA Commu
 
 Press `Q` in the terminal to gracefully stop the server.
 
-## Exporting the Project
+### Exporting the Project
 
 To export the final static output, shutdown the development server and then export the project using:
 
