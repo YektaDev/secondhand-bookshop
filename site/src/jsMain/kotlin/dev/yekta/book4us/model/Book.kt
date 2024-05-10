@@ -16,7 +16,7 @@ data class Book(
     @SerialName("id")
     val id: Int,
     @SerialName("publication_year")
-    val publicationYear: Int,
+    val publicationYear: String,
     @SerialName("title")
     val title: String
 )

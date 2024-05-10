@@ -1,6 +1,8 @@
 package dev.yekta.book4us.pages
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.varabyte.kobweb.compose.css.StyleVariable
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -23,17 +25,28 @@ import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.ColorSchemes
-import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Text
 import dev.yekta.book4us.HeadlineTextStyle
 import dev.yekta.book4us.SubheadlineTextStyle
 import dev.yekta.book4us.components.layouts.PageLayout
+import dev.yekta.book4us.data.API
+import dev.yekta.book4us.model.BookLoadingState
+import dev.yekta.book4us.model.BookLoadingState.Loading
+import dev.yekta.book4us.model.BookLoadingState.Success
 import dev.yekta.book4us.toSitePalette
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.web.css.cssRem
+import org.jetbrains.compose.web.css.fr
+import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.css.vh
+import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Text
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
 val HeroContainerStyle by ComponentStyle {
-    base { Modifier.fillMaxWidth().gap(2.cssRem) }
+    base { Modifier.fillMaxWidth().gap(21.cssRem) }
     Breakpoint.MD { Modifier.margin { top(20.vh) } }
 }
 
@@ -63,10 +76,42 @@ private fun GridCell(color: Color, row: Int, column: Int, width: Int? = null, he
     )
 }
 
+private val booksState: MutableStateFlow<BookLoadingState> = MutableStateFlow(Loading)
+
+
+private val scope = CoroutineScope(Dispatchers.Default)
+
+
 @Page
 @Composable
 fun HomePage() {
+    scope.launch { booksState.value = API.getBooks() }
+
     PageLayout("Home") {
+        val state by booksState.collectAsState()
+        when (state) {
+            Loading -> {
+                Div { Text("Loading...") }
+            }
+
+            is BookLoadingState.Error -> {
+                Div {
+                    Text((state as? Error)?.message?.let { "Error: $it" }
+                        ?: "There was an issue with getting the books")
+                }
+            }
+
+            is Success -> {
+                Column {
+                    (state as Success).books.forEach { book ->
+                        Div {
+                            Text("Book: ${book.title}")
+                        }
+                    }
+                }
+            }
+        }
+
         Row(HeroContainerStyle.toModifier()) {
             Box {
                 val sitePalette = ColorMode.current.toSitePalette()
@@ -113,7 +158,7 @@ fun HomePage() {
                 .displayIfAtLeast(Breakpoint.MD)
                 .grid {
                     rows { repeat(3) { size(1.fr) } }
-                    columns { repeat(5) {size(1.fr) } }
+                    columns { repeat(5) { size(1.fr) } }
                 }
                 .toAttrs()
             ) {
