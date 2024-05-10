@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 group = "dev.yekta.book4us"
@@ -31,6 +32,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
+            implementation(kotlinx.serialization)
         }
 
         jsMain.dependencies {
