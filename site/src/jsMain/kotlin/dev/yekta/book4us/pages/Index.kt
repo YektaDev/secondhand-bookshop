@@ -1,24 +1,26 @@
 package dev.yekta.book4us.pages
 
 import androidx.compose.runtime.*
-import com.varabyte.kobweb.compose.css.*
+import com.varabyte.kobweb.compose.css.JustifyItems
+import com.varabyte.kobweb.compose.css.JustifySelf
+import com.varabyte.kobweb.compose.css.accentColor
+import com.varabyte.kobweb.compose.css.boxShadow
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.graphics.Color
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
-import com.varabyte.kobweb.silk.components.style.base
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.text.SpanText
 import dev.yekta.book4us.components.layouts.PageLayout
+import dev.yekta.book4us.components.widgets.Button
 import dev.yekta.book4us.data.API
 import dev.yekta.book4us.model.BookLoadingState
 import dev.yekta.book4us.model.BookLoadingState.Loading
@@ -29,40 +31,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.css.AlignItems
-import org.jetbrains.compose.web.css.JustifyContent
-import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.*
-import org.w3c.dom.mediacapture.DoubleRange
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-// Container that has a tagline and grid on desktop, and just the tagline on mobile
-val HeroContainerStyle by ComponentStyle {
-    base { Modifier.fillMaxWidth().gap(21.cssRem) }
-    Breakpoint.MD { Modifier.margin { top(20.vh) } }
-}
-
-// A demo grid that appears on the homepage because it looks good
-val HomeGridStyle by ComponentStyle.base {
-    Modifier
-        .gap(0.5.cssRem)
-        .width(70.cssRem)
-        .height(18.cssRem)
-}
-
-private val GridCellColorVar by StyleVariable<Color>()
-val HomeGridCellStyle by ComponentStyle.base {
-    Modifier
-        .backgroundColor(GridCellColorVar.value())
-        .boxShadow(blurRadius = 0.6.cssRem, color = GridCellColorVar.value())
-        .borderRadius(1.cssRem)
-}
-
 private val booksState: MutableStateFlow<BookLoadingState> = MutableStateFlow(Loading)
-
-
 private val scope = CoroutineScope(Dispatchers.Default)
 
 @Composable
@@ -115,85 +89,73 @@ val SearchContainerStyle by ComponentStyle {
 @Page
 @Composable
 fun HomePage() {
+    var isSearchVisible by remember { mutableStateOf(false) }
     var minPrice by remember { mutableStateOf(1) }
     var maxPrice by remember { mutableStateOf(100) }
 
     scope.launch { booksState.value = API.getBooks() }
 
-
     PageLayout("Home") {
-        Div(SearchContainerStyle.toAttrs()) {
-            SearchBox(Modifier.fillMaxWidth(), "Search in title & description...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
-            }
-            SearchBox(Modifier.fillMaxWidth(), "Search in author...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
-            }
-            SearchBox(Modifier.fillMaxWidth(), "Search in genres...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
+        when (isSearchVisible) {
+            false -> Div(Modifier.margin(bottom = 2.cssRem).toAttrs()) {
+                Button("Looking for Something?") { isSearchVisible = true }
             }
 
-        }
-        Div(SearchContainerStyle.toAttrs()) {
-            Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
-                SpanText("Min Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
-                SpanText(" \$$minPrice", Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem))
-                RangeInput(value = minPrice, min = 1, max = 100, step = 1) {
-                    onInput { minPrice = min(maxPrice - 1, it.value?.toInt() ?: 0) }
-                    style {
-                        width(100.percent)
-                        height(1.cssRem)
-                        backgroundColor(Colors.White)
-                        display(DisplayStyle.Block)
-                        borderRadius(1.cssRem)
-                        accentColor(Colors.MediumPurple)
-                        marginBottom(2.cssRem)
+            true -> {
+                Div(SearchContainerStyle.toAttrs()) {
+                    SearchBox(Modifier.fillMaxWidth(), "Search in title & description...") { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
+                    }
+                    SearchBox(Modifier.fillMaxWidth(), "Search in author...") { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
+                    }
+                    SearchBox(Modifier.fillMaxWidth(), "Search in genres...") { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
                     }
                 }
-            }
-            Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
-                SpanText("Max Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
-                SpanText(" \$$maxPrice", Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem))
-                RangeInput(value = maxPrice, min = 1, max = 100, step = 1) {
-                    onInput { maxPrice = max(minPrice + 1, it.value?.toInt() ?: 0) }
-                    style {
-                        width(100.percent)
-                        height(1.cssRem)
-                        backgroundColor(Colors.White)
-                        display(DisplayStyle.Block)
-                        borderRadius(1.cssRem)
-                        accentColor(Colors.MediumPurple)
-                        marginBottom(2.cssRem)
+                Div(SearchContainerStyle.toAttrs()) {
+                    Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
+                        SpanText("Min Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
+                        SpanText(
+                            " \$$minPrice",
+                            Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem)
+                        )
+                        RangeInput(value = minPrice, min = 1, max = 100, step = 1) {
+                            onInput { minPrice = min(maxPrice - 1, it.value?.toInt() ?: 0) }
+                            style {
+                                width(100.percent)
+                                height(1.cssRem)
+                                backgroundColor(Colors.White)
+                                display(DisplayStyle.Block)
+                                borderRadius(1.cssRem)
+                                accentColor(Colors.MediumPurple)
+                                marginBottom(2.cssRem)
+                            }
+                        }
+                    }
+                    Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
+                        SpanText("Max Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
+                        SpanText(
+                            " \$$maxPrice",
+                            Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem)
+                        )
+                        RangeInput(value = maxPrice, min = 1, max = 100, step = 1) {
+                            onInput { maxPrice = max(minPrice + 1, it.value?.toInt() ?: 0) }
+                            style {
+                                width(100.percent)
+                                height(1.cssRem)
+                                backgroundColor(Colors.White)
+                                display(DisplayStyle.Block)
+                                borderRadius(1.cssRem)
+                                accentColor(Colors.MediumPurple)
+                                marginBottom(2.cssRem)
+                            }
+                        }
+                    }
+                    Button("Search") {
+
                     }
                 }
-            }
-            Div(
-                Modifier
-                    .backgroundColor(Colors.MediumPurple)
-                    .padding(topBottom = .5.cssRem, leftRight = 2.cssRem)
-                    .borderRadius(.5.cssRem)
-                    .display(DisplayStyle.Flex)
-                    .margin(topBottom = autoLength)
-                    .justifyContent(JustifyContent.Center)
-                    .alignItems(AlignItems.Center)
-                    .fontSize(1.cssRem)
-                    .color(Colors.White)
-                    .cursor(Cursor.Pointer)
-                    .onMouseEnter { GridCellColorVar.value(Colors.DarkOrchid) }
-                    .onClick { /*scope.launch { booksState.value = API.getBooks() }*/ }
-                    .fontFamily(
-                        "system-ui",
-                        "-apple-system",
-                        "BlinkMacSystemFont",
-                        "Segoe UI",
-                        "Roboto",
-                        "Helvetica Neue",
-                        "Arial",
-                        "sans-serif"
-                    )
-                    .toAttrs()
-            ) {
-                Text("Search")
             }
         }
 
@@ -302,4 +264,9 @@ fun HomePage() {
             }
         }
     }
+}
+
+@Composable
+fun SearchPanel() {
+
 }
