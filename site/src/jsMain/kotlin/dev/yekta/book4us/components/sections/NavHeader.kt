@@ -43,7 +43,7 @@ import org.jetbrains.compose.web.dom.Div
 import kotlin.math.roundToInt
 
 val NavHeaderStyle by ComponentStyle.base {
-    Modifier.backgroundColor(Colors.White.copy(alpha = 50)).fillMaxWidth().backdropFilter(saturate(180.percent), blur(5.px)).boxShadow(offsetY = 1.px, color = Colors.White).padding(1.cssRem)
+    Modifier.backgroundColor(Colors.RebeccaPurple.copy(alpha = 5)).fillMaxWidth().backdropFilter(saturate(180.percent), blur(5.px)).boxShadow(offsetY = 1.px, color = Colors.White).padding(1.cssRem)
 }
 
 @Composable
