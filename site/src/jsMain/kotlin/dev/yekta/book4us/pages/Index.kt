@@ -1,9 +1,7 @@
 package dev.yekta.book4us.pages
 
 import androidx.compose.runtime.*
-import com.varabyte.kobweb.compose.css.JustifySelf
-import com.varabyte.kobweb.compose.css.StyleVariable
-import com.varabyte.kobweb.compose.css.boxShadow
+import com.varabyte.kobweb.compose.css.*
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -18,7 +16,7 @@ import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.style.ComponentStyle
 import com.varabyte.kobweb.silk.components.style.base
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.toModifier
+import com.varabyte.kobweb.silk.components.style.toAttrs
 import com.varabyte.kobweb.silk.components.text.SpanText
 import dev.yekta.book4us.components.layouts.PageLayout
 import dev.yekta.book4us.data.API
@@ -31,6 +29,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.AlignItems
+import org.jetbrains.compose.web.css.JustifyContent
 import org.jetbrains.compose.web.dom.*
 import kotlin.math.abs
 
@@ -56,16 +56,6 @@ val HomeGridCellStyle by ComponentStyle.base {
         .borderRadius(1.cssRem)
 }
 
-@Composable
-private fun GridCell(color: Color, row: Int, column: Int, width: Int? = null, height: Int? = null) {
-    Div(
-        HomeGridCellStyle.toModifier()
-            .setVariable(GridCellColorVar, color)
-            .gridItem(row, column, width, height)
-            .toAttrs()
-    )
-}
-
 private val booksState: MutableStateFlow<BookLoadingState> = MutableStateFlow(Loading)
 
 
@@ -75,8 +65,8 @@ private val scope = CoroutineScope(Dispatchers.Default)
 private fun String.rememberImaginaryPrice() = remember { "$" + abs(hashCode() % 76 + 24).toString() }
 
 @Composable
-fun SearchBox(modifier: Modifier = Modifier, onSearch: (String) -> Unit = {}) {
-    Div(modifier.fillMaxWidth().toAttrs()) {
+fun SearchBox(modifier: Modifier = Modifier, hint: String, onSearch: (String) -> Unit = {}) {
+    Div(modifier.toAttrs()) {
         var searchInput by remember { mutableStateOf("") }
         LaunchedEffect(searchInput) { onSearch(searchInput) }
         SearchInput(searchInput) {
@@ -100,9 +90,22 @@ fun SearchBox(modifier: Modifier = Modifier, onSearch: (String) -> Unit = {}) {
                 )
             }
             onInput { searchInput = it.value }
-            placeholder("𝓢𝓮𝓪𝓻𝓬𝓱 𝔀𝓱𝓪𝓽 𝔂𝓸𝓾𝓻 𝓱𝓮𝓪𝓻𝓽 𝓭𝓮𝓼𝓲𝓻𝓮𝓼...")
+            placeholder(hint)
         }
     }
+}
+
+val SearchContainerStyle by ComponentStyle {
+    base {
+        Modifier
+            .display(DisplayStyle.Flex)
+            .flexDirection(FlexDirection.Column)
+            .fillMaxWidth()
+            .gap(1.cssRem)
+            .justifyItems(JustifyItems.Stretch)
+            .margin(bottom = 2.cssRem)
+    }
+    Breakpoint.MD { Modifier.flexDirection(FlexDirection.Row) }
 }
 
 @Page
@@ -111,9 +114,45 @@ fun HomePage() {
     scope.launch { booksState.value = API.getBooks() }
 
     PageLayout("Home") {
-//        SearchBox(Modifier.margin(bottom = 2.cssRem)) { query ->
+        Div(SearchContainerStyle.toAttrs()) {
+            SearchBox(Modifier.fillMaxWidth(), "Search in title & description...") { query ->
 //            scope.launch { booksState.value = API.getBooks(query) }
-//        }
+            }
+            SearchBox(Modifier.fillMaxWidth(), "Search in author...") { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
+            }
+            SearchBox(Modifier.fillMaxWidth(), "Search in genres...") { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
+            }
+            Div(
+                Modifier
+                    .backgroundColor(Colors.MediumPurple)
+                    .padding(1.cssRem)
+                    .borderRadius(1.cssRem)
+                    .display(DisplayStyle.Flex)
+                    .justifyContent(JustifyContent.Center)
+                    .alignItems(AlignItems.Center)
+                    .fontSize(1.cssRem)
+                    .color(Colors.White)
+                    .cursor(Cursor.Pointer)
+                    .onMouseEnter { GridCellColorVar.value(Colors.DarkOrchid) }
+                    .onClick { /*scope.launch { booksState.value = API.getBooks() }*/ }
+                    .fontFamily(
+                        "system-ui",
+                        "-apple-system",
+                        "BlinkMacSystemFont",
+                        "Segoe UI",
+                        "Roboto",
+                        "Helvetica Neue",
+                        "Arial",
+                        "sans-serif"
+                    )
+                    .toAttrs()
+            ) {
+                Text("Search")
+            }
+        }
+
 
         val state by booksState.collectAsState()
         when (state) {
