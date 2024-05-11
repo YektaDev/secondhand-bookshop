@@ -1,9 +1,10 @@
 package dev.yekta.book4us.pages
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.css.StyleVariable
+import com.varabyte.kobweb.compose.css.boxShadow
+import com.varabyte.kobweb.compose.css.functions.conicGradient
+import com.varabyte.kobweb.compose.css.functions.linearGradient
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -28,14 +29,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.web.css.FlexWrap
-import org.jetbrains.compose.web.css.cssRem
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.css.vh
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Img
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.attributes.placeholder
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
 val HeroContainerStyle by ComponentStyle {
@@ -75,12 +71,44 @@ private val booksState: MutableStateFlow<BookLoadingState> = MutableStateFlow(Lo
 private val scope = CoroutineScope(Dispatchers.Default)
 
 
+@Composable
+fun SearchBox(modifier: Modifier = Modifier) {
+    Div(modifier.fillMaxWidth().toAttrs()) {
+        var searchInput by remember { mutableStateOf("") }
+        SearchInput(searchInput) {
+            style {
+                backgroundColor(Colors.White)
+                display(DisplayStyle.Block)
+                width(100.percent)
+                padding(1.cssRem)
+                border {
+                    width = 0.1.cssRem
+                    color = Colors.Gray.copy(alpha = 50)
+                    style = LineStyle.Solid
+                }
+                borderRadius(1.cssRem)
+                flexWrap(FlexWrap.Nowrap)
+                boxShadow(
+                    offsetY = 0.125.cssRem,
+                    blurRadius = 0.25.cssRem,
+                    spreadRadius = .05.cssRem,
+                    color = Colors.Black.copy(alpha = 15)
+                )
+            }
+            onInput { searchInput = it.value }
+            placeholder("𝓢𝓮𝓪𝓻𝓬𝓱 𝔀𝓱𝓪𝓽 𝔂𝓸𝓾𝓻 𝓱𝓮𝓪𝓻𝓽 𝓭𝓮𝓼𝓲𝓻𝓮𝓼...")
+        }
+    }
+}
+
 @Page
 @Composable
 fun HomePage() {
     scope.launch { booksState.value = API.getBooks() }
 
     PageLayout("Home") {
+        SearchBox(Modifier.margin(bottom = 2.cssRem))
+
         val state by booksState.collectAsState()
         when (state) {
             Loading -> {
@@ -109,7 +137,7 @@ fun HomePage() {
                                 .backgroundColor(Colors.White)
                                 .padding(all = 1.cssRem)
                                 .gap(1.5.cssRem)
-                                .width(35.cssRem)
+                                .maxWidth(35.cssRem)
                                 .weight(1)
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
