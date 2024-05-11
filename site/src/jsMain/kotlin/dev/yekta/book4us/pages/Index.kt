@@ -31,8 +31,12 @@ import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.JustifyContent
+import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.*
+import org.w3c.dom.mediacapture.DoubleRange
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
 val HeroContainerStyle by ComponentStyle {
@@ -111,7 +115,11 @@ val SearchContainerStyle by ComponentStyle {
 @Page
 @Composable
 fun HomePage() {
+    var minPrice by remember { mutableStateOf(1) }
+    var maxPrice by remember { mutableStateOf(100) }
+
     scope.launch { booksState.value = API.getBooks() }
+
 
     PageLayout("Home") {
         Div(SearchContainerStyle.toAttrs()) {
@@ -124,12 +132,48 @@ fun HomePage() {
             SearchBox(Modifier.fillMaxWidth(), "Search in genres...") { query ->
 //            scope.launch { booksState.value = API.getBooks(query) }
             }
+
+        }
+        Div(SearchContainerStyle.toAttrs()) {
+            Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
+                SpanText("Min Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
+                SpanText(" \$$minPrice", Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem))
+                RangeInput(value = minPrice, min = 1, max = 100, step = 1) {
+                    onInput { minPrice = min(maxPrice - 1, it.value?.toInt() ?: 0) }
+                    style {
+                        width(100.percent)
+                        height(1.cssRem)
+                        backgroundColor(Colors.White)
+                        display(DisplayStyle.Block)
+                        borderRadius(1.cssRem)
+                        accentColor(Colors.MediumPurple)
+                        marginBottom(2.cssRem)
+                    }
+                }
+            }
+            Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
+                SpanText("Max Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
+                SpanText(" \$$maxPrice", Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem))
+                RangeInput(value = maxPrice, min = 1, max = 100, step = 1) {
+                    onInput { maxPrice = max(minPrice + 1, it.value?.toInt() ?: 0) }
+                    style {
+                        width(100.percent)
+                        height(1.cssRem)
+                        backgroundColor(Colors.White)
+                        display(DisplayStyle.Block)
+                        borderRadius(1.cssRem)
+                        accentColor(Colors.MediumPurple)
+                        marginBottom(2.cssRem)
+                    }
+                }
+            }
             Div(
                 Modifier
                     .backgroundColor(Colors.MediumPurple)
-                    .padding(1.cssRem)
-                    .borderRadius(1.cssRem)
+                    .padding(topBottom = .5.cssRem, leftRight = 2.cssRem)
+                    .borderRadius(.5.cssRem)
                     .display(DisplayStyle.Flex)
+                    .margin(topBottom = autoLength)
                     .justifyContent(JustifyContent.Center)
                     .alignItems(AlignItems.Center)
                     .fontSize(1.cssRem)
