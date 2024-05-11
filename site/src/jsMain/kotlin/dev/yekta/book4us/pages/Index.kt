@@ -26,10 +26,9 @@ import dev.yekta.book4us.model.BookLoadingState.*
 import dev.yekta.book4us.model.BookSort
 import dev.yekta.book4us.model.BookSort.LEAST_EXPENSIVE_FIRST
 import dev.yekta.book4us.model.BookSort.MOST_EXPENSIVE_FIRST
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.attributes.placeholder
@@ -41,6 +40,7 @@ import kotlin.math.min
 
 private val apiBooksState: MutableStateFlow<BookLoadingState> = MutableStateFlow(Loading)
 private val scope = CoroutineScope(Dispatchers.Default)
+private var searchingJob: Job? = null
 
 @Composable
 fun SearchBox(modifier: Modifier = Modifier, hint: String, state: MutableState<String>) {
@@ -98,9 +98,11 @@ fun HomePage() {
     scope.launch { apiBooksState.value = API.getBooks() }
 
     LaunchedEffect(titleOrDescription.value, author.value, genres.value, minPrice, maxPrice, sort) {
-        when (val state = apiBooksState.value) {
-            Loading, is LoadFailed, is Loaded, is Searching -> Unit
-            is Searched -> apiBooksState.value = Searching(state.books)
+        withContext(Dispatchers.Main.immediate) {
+            when (val state = apiBooksState.value) {
+                Loading, is LoadFailed, is Loaded, is Searching -> Unit
+                is Searched -> apiBooksState.value = Searching(state.books)
+            }
         }
     }
 
@@ -214,10 +216,10 @@ fun HomePage() {
         when (val state = apiBooksState.collectAsState().value) {
             is Loading -> Div { Text("Loading...") }
             is Searching -> {
-                LaunchedEffect(titleOrDescription, author, genres, minPrice, maxPrice, sort) {
-                    apiBooksState.value = Searched(
-                        books = state.books,
-                        filteredBooks = Search.search(
+                LaunchedEffect(titleOrDescription.value, author.value, genres.value, minPrice, maxPrice, sort) {
+                    searchingJob?.cancel()
+                    searchingJob = scope.launch {
+                        val result = Search.search(
                             books = state.books,
                             titleOrDescription = titleOrDescription.value,
                             author = author.value,
@@ -226,14 +228,17 @@ fun HomePage() {
                             maxPrice = maxPrice,
                             sort = sort,
                         )
-                    )
+                        apiBooksState.update { Searched(books = state.books, filteredBooks = result) }
+                    }
                 }
                 Div { Text("Searching...") }
             }
 
             is LoadFailed -> Div { Text(state.message.let { "Error: $it" }) }
             is Loaded -> {
-                apiBooksState.value = Searching(state.books)
+                LaunchedEffect(Unit) {
+                    apiBooksState.value = Searching(state.books)
+                }
                 Div { Text("Books loaded, starting search...") }
             }
 
