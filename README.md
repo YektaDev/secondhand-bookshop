@@ -1,6 +1,6 @@
 # Book4Us
 
-Welcome to Book4Us, an asynchronous second hand book shop that showcases the power of Kotlin and modern web
+Welcome to Book4Us, an asynchronous second-hand bookshop that showcases the power of Kotlin and modern web
 technologies. This project demonstrates the use of a different asynchronous programming technique than the usual
 techniques used in JavaScript-based technologies. This technique is using Coroutines. It's extremely powerful and keeps
 the code simple.
@@ -29,6 +29,29 @@ utilizes Ktor Client, a powerful HTTP client for Kotlin, to make asynchronous ne
 data. By leveraging Kotlin Coroutines, Book4Us ensures that the UI remains responsive during the data fetching process,
 providing a seamless user experience.
 
+### Caching
+
+To optimize performance and reduce network requests, Book4Us implements a caching mechanism that stores the fetched book
+catalog data in local storage. This caching strategy ensures that the data is readily available for subsequent visits to
+the website, eliminating the need to fetch the data from the remote server each time. By caching the data locally,
+Book4Us significantly improves the loading speed and responsiveness of the application.
+
+### Advanced Search
+
+Book4Us features an advanced search functionality that allows users to search for books based on specific criteria,
+such as title and description, author, or a group of genres, plus sorting by price. The search functionality is
+implemented using Kotlin Coroutines, enabling users to perform real-time searches without blocking the UI. As users type
+in the search query, Book4Us dynamically filters the book catalog data and displays the relevant results, providing a
+seamless and interactive search experience.
+
+### Checkout
+
+Book4Us provides a simple and intuitive checkout process that allows users to add books to their cart and proceed to
+checkout. The checkout process is designed to be user-friendly, with extremely clear and concise user interface. Users
+can easily view the books in their cart, clear the cart, and proceed to checkout to complete their purchase. The cart
+items are persisted in local storage, ensuring that users can return to the website and continue their shopping
+experience without losing their cart items.
+
 ### Parsing and Displaying Data
 
 Once the book catalog data is fetched from the remote server, Book4Us efficiently parses the JSON data using Kotlinx
@@ -48,9 +71,16 @@ and modern design, making it easy for users to navigate and explore the book cat
 hub, presenting a list of books with relevant information such as title, author, and genres. In the future, Users will
 be able to effortlessly sort the books by title or price to find their desired books quickly.
 
+### Responsiveness
+
+Book4Us is built with responsiveness in mind, ensuring that the application adapts seamlessly to different screen sizes
+and devices. The website is designed to provide an optimal viewing experience across a wide range of devices, including
+desktops, laptops, tablets, and smartphones. The responsive design ensures that users can access and interact with the
+application comfortably, regardless of the device they are using.
+
 ### Documentation
 
-Comprehensive documentation is provided right here, to guide developers through the implementation details of Book4Us.
+Comprehensive documentation is provided right here, to guide developers through the details of Book4Us.
 
 ### Top Navigation Bar
 
