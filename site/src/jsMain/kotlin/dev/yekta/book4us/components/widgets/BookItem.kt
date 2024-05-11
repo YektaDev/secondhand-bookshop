@@ -58,7 +58,7 @@ fun ColumnScope.BookItem(book: Book, isSelected: Boolean, onSelectClick: () -> U
                                 .borderRadius(1.cssRem)
                                 .cursor(Cursor.Pointer)
                                 .onClick { onSelectClick() }
-                                .onMouseEnter { btnColor = Colors.Red }
+                                .onMouseEnter { btnColor = Colors.DarkRed }
                                 .onMouseLeave { btnColor = Colors.Transparent }
                         )
                     } else {
