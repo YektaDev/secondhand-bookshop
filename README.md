@@ -59,6 +59,13 @@ down. This navigation bar provides quick access to essential sections of the web
 page, ensuring easy navigation and a seamless user experience. The menu items fold into a hamburger menu on smaller
 screens, optimizing the user experience for mobile devices.
 
+### A Funny Hack
+
+The Book API used by the project doesn't provide any price information for the books. Since this is a shop, it needs
+price tags. So, the project uses a funny hack to use the hash code of the book title as an input, and then generates a
+price based on that hash code. This ensures that each book has a price, and the price remains consistent for the same
+book title.
+
 ## Pages
 
 The project consists of the following main pages:
