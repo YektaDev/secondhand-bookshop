@@ -76,7 +76,7 @@ val SearchContainerStyle by ComponentStyle {
             .fillMaxWidth()
             .gap(1.cssRem)
             .justifyItems(JustifyItems.Stretch)
-            .margin(bottom = 2.cssRem)
+            .margin(bottom = 1.cssRem)
     }
     Breakpoint.MD { Modifier.flexDirection(FlexDirection.Row) }
 }
@@ -130,58 +130,74 @@ fun HomePage() {
             }
         }
         if (isSearchVisible) {
-            Div(SearchContainerStyle.toAttrs()) {
-                SearchBox(Modifier.fillMaxWidth(), "Search in title & description...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
-                }
-                SearchBox(Modifier.fillMaxWidth(), "Search in author...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
-                }
-                SearchBox(Modifier.fillMaxWidth(), "Search in genres...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
-                }
-            }
-            Div(SearchContainerStyle.toAttrs()) {
-                Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
-                    SpanText("Min Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
-                    SpanText(
-                        " \$$minPrice",
-                        Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem)
+            Div(
+                Modifier
+                    .backgroundColor(Colors.RebeccaPurple.copy(alpha = 30))
+                    .boxShadow(
+                        offsetY = .1.cssRem,
+                        blurRadius = .25.cssRem,
+                        spreadRadius = .05.cssRem,
+                        color = Colors.Black.copy(alpha = 15)
                     )
-                    RangeInput(value = minPrice, min = 1, max = 100, step = 1) {
-                        onInput { minPrice = min(maxPrice - 1, it.value?.toInt() ?: 0) }
-                        style {
-                            width(100.percent)
-                            height(1.cssRem)
-                            backgroundColor(Colors.White)
-                            display(DisplayStyle.Block)
-                            borderRadius(1.cssRem)
-                            accentColor(Colors.MediumPurple)
-                            marginBottom(2.cssRem)
-                        }
+                    .padding(left = 1.cssRem, top = 1.cssRem, right = 1.cssRem)
+                    .margin(top = 1.cssRem, left = 1.cssRem, right = 1.cssRem, bottom = 2.cssRem)
+                    .borderRadius(1.cssRem)
+                    .fillMaxWidth()
+                    .toAttrs()
+            ) {
+                Div(SearchContainerStyle.toAttrs()) {
+                    SearchBox(Modifier.fillMaxWidth(), "Search in title & description...") { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
+                    }
+                    SearchBox(Modifier.fillMaxWidth(), "Search in author...") { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
+                    }
+                    SearchBox(Modifier.fillMaxWidth(), "Search in genres...") { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
                     }
                 }
-                Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
-                    SpanText("Max Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
-                    SpanText(
-                        " \$$maxPrice",
-                        Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem)
-                    )
-                    RangeInput(value = maxPrice, min = 1, max = 100, step = 1) {
-                        onInput { maxPrice = max(minPrice + 1, it.value?.toInt() ?: 0) }
-                        style {
-                            width(100.percent)
-                            height(1.cssRem)
-                            backgroundColor(Colors.White)
-                            display(DisplayStyle.Block)
-                            borderRadius(1.cssRem)
-                            accentColor(Colors.MediumPurple)
-                            marginBottom(2.cssRem)
+                Div(SearchContainerStyle.toAttrs()) {
+                    Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
+                        SpanText("Min Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
+                        SpanText(
+                            " \$$minPrice",
+                            Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem)
+                        )
+                        RangeInput(value = minPrice, min = 1, max = 100, step = 1) {
+                            onInput { minPrice = min(maxPrice - 1, it.value?.toInt() ?: 0) }
+                            style {
+                                width(100.percent)
+                                height(1.cssRem)
+                                backgroundColor(Colors.White)
+                                display(DisplayStyle.Block)
+                                borderRadius(1.cssRem)
+                                accentColor(Colors.MediumPurple)
+                                marginBottom(1.cssRem)
+                            }
                         }
                     }
-                }
-                Button("Search") {
+                    Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
+                        SpanText("Max Price: ", Modifier.color(Colors.RebeccaPurple.copy(alpha = 180)))
+                        SpanText(
+                            " \$$maxPrice",
+                            Modifier.color(Colors.RebeccaPurple).fontWeight(600).fontSize(1.25.cssRem)
+                        )
+                        RangeInput(value = maxPrice, min = 1, max = 100, step = 1) {
+                            onInput { maxPrice = max(minPrice + 1, it.value?.toInt() ?: 0) }
+                            style {
+                                width(100.percent)
+                                height(1.cssRem)
+                                backgroundColor(Colors.White)
+                                display(DisplayStyle.Block)
+                                borderRadius(1.cssRem)
+                                accentColor(Colors.MediumPurple)
+                                marginBottom(1.cssRem)
+                            }
+                        }
+                    }
+                    Button("Search") {
 
+                    }
                 }
             }
         }
