@@ -23,7 +23,7 @@ object API {
         val body = client.get(API_URL).bodyAsText()
         json.decodeFromString<List<Book>>(body)
     }.fold(
-        onSuccess = { BookLoadingState.Success(it) },
-        onFailure = { BookLoadingState.Error("Failed to load books from the server \uD83D\uDE41\nPlease check your connection and try again\n(${it.message})") }
+        onSuccess = { BookLoadingState.Loaded(it) },
+        onFailure = { BookLoadingState.LoadFailed("Failed to load books from the server \uD83D\uDE41\nPlease check your connection and try again\n(${it.message})") }
     )
 }

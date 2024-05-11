@@ -19,12 +19,10 @@ import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Span
 import kotlin.math.abs
 
-val Book.price
-    @Composable
-    get() = remember(title) { abs(title.hashCode() % 76 + 24) }
+val Book.price get() = abs(title.hashCode() % 76 + 24)
 
 @Composable
-private fun Book.rememberImaginaryPrice() = "$$price"
+private fun Book.rememberImaginaryPrice() = remember {  "$$price" }
 
 @Composable
 fun ColumnScope.BookItem(book: Book, isSelected: Boolean, onSelectClick: () -> Unit) {

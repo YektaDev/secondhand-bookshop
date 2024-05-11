@@ -20,13 +20,18 @@ import dev.yekta.book4us.components.widgets.BookItem
 import dev.yekta.book4us.components.widgets.Button
 import dev.yekta.book4us.data.API
 import dev.yekta.book4us.data.CartStore
+import dev.yekta.book4us.data.Search
 import dev.yekta.book4us.model.BookLoadingState
-import dev.yekta.book4us.model.BookLoadingState.Loading
-import dev.yekta.book4us.model.BookLoadingState.Success
+import dev.yekta.book4us.model.BookLoadingState.*
+import dev.yekta.book4us.model.BookSort
+import dev.yekta.book4us.model.BookSort.LEAST_EXPENSIVE_FIRST
+import dev.yekta.book4us.model.BookSort.MOST_EXPENSIVE_FIRST
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.css.DisplayStyle.Companion.Flex
@@ -34,15 +39,13 @@ import org.jetbrains.compose.web.dom.*
 import kotlin.math.max
 import kotlin.math.min
 
-private val booksState: MutableStateFlow<BookLoadingState> = MutableStateFlow(Loading)
+private val apiBooksState: MutableStateFlow<BookLoadingState> = MutableStateFlow(Loading)
 private val scope = CoroutineScope(Dispatchers.Default)
 
 @Composable
-fun SearchBox(modifier: Modifier = Modifier, hint: String, onSearch: (String) -> Unit = {}) {
+fun SearchBox(modifier: Modifier = Modifier, hint: String, state: MutableState<String>) {
     Div(modifier.toAttrs()) {
-        var searchInput by remember { mutableStateOf("") }
-        LaunchedEffect(searchInput) { onSearch(searchInput) }
-        SearchInput(searchInput) {
+        SearchInput(state.value) {
             style {
                 backgroundColor(Colors.White)
                 display(DisplayStyle.Block)
@@ -62,7 +65,7 @@ fun SearchBox(modifier: Modifier = Modifier, hint: String, onSearch: (String) ->
                     color = Colors.Black.copy(alpha = 15)
                 )
             }
-            onInput { searchInput = it.value }
+            onInput { state.value = it.value }
             placeholder(hint)
         }
     }
@@ -85,10 +88,21 @@ val SearchContainerStyle by ComponentStyle {
 @Composable
 fun HomePage() {
     var isSearchVisible by remember { mutableStateOf(false) }
+    val titleOrDescription = remember { mutableStateOf("") }
+    val author = remember { mutableStateOf("") }
+    val genres = remember { mutableStateOf("") }
     var minPrice by remember { mutableStateOf(1) }
     var maxPrice by remember { mutableStateOf(100) }
+    var sort by remember { mutableStateOf(LEAST_EXPENSIVE_FIRST) }
 
-    scope.launch { booksState.value = API.getBooks() }
+    scope.launch { apiBooksState.value = API.getBooks() }
+
+    LaunchedEffect(titleOrDescription.value, author.value, genres.value, minPrice, maxPrice, sort) {
+        when (val state = apiBooksState.value) {
+            Loading, is LoadFailed, is Loaded, is Searching -> Unit
+            is Searched -> apiBooksState.value = Searching(state.books)
+        }
+    }
 
     PageLayout("Home") {
         Box(Modifier.maxWidth(35.cssRem).fillMaxWidth()) {
@@ -120,12 +134,16 @@ fun HomePage() {
                                 color = Colors.Black.copy(alpha = 15)
                             )
                         }
+                        onChange {
+                            sort = it.value?.let { value -> Json.decodeFromString<BookSort>(value) }
+                                ?: LEAST_EXPENSIVE_FIRST
+                        }
                     }
                 ) {
-                    Option(value = "Price: Low to High") { Text("Price: Low to High") }
-                    Option(value = "Price: High to Low") { Text("Price: High to Low") }
-                    Option(value = "Newest") { Text("Newest") }
-                    Option(value = "Oldest") { Text("Oldest") }
+                    val leastExpensive = remember { Json.encodeToString(LEAST_EXPENSIVE_FIRST) }
+                    val mostExpensive = remember { Json.encodeToString(MOST_EXPENSIVE_FIRST) }
+                    Option(value = leastExpensive) { Text("Least Expensive First") }
+                    Option(value = mostExpensive) { Text("Most Expensive First") }
                 }
             }
         }
@@ -146,15 +164,9 @@ fun HomePage() {
                     .toAttrs()
             ) {
                 Div(SearchContainerStyle.toAttrs()) {
-                    SearchBox(Modifier.fillMaxWidth(), "Search in title & description...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
-                    }
-                    SearchBox(Modifier.fillMaxWidth(), "Search in author...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
-                    }
-                    SearchBox(Modifier.fillMaxWidth(), "Search in genres...") { query ->
-//            scope.launch { booksState.value = API.getBooks(query) }
-                    }
+                    SearchBox(Modifier.fillMaxWidth(), "Search in title/description...", titleOrDescription)
+                    SearchBox(Modifier.fillMaxWidth(), "Search in author...", author)
+                    SearchBox(Modifier.fillMaxWidth(), "Search in genres...", genres)
                 }
                 Div(SearchContainerStyle.toAttrs()) {
                     Div(Modifier.gap(1.cssRem).flexGrow(1).toAttrs()) {
@@ -202,30 +214,39 @@ fun HomePage() {
             }
         }
 
-
-        val state by booksState.collectAsState()
-        when (state) {
-            is Loading -> {
-                Div { Text("Loading...") }
-            }
-
-            is BookLoadingState.Error -> {
-                Div {
-                    Text((state as? Error)?.message?.let { "Error: $it" }
-                        ?: "There was an error loading the books. Please check your connection and try again.")
+        when (val state = apiBooksState.collectAsState().value) {
+            is Loading -> Div { Text("Loading...") }
+            is Searching -> {
+                LaunchedEffect(titleOrDescription, author, genres, minPrice, maxPrice, sort) {
+                    apiBooksState.value = Searched(
+                        books = state.books,
+                        filteredBooks = Search.search(
+                            books = state.books,
+                            titleOrDescription = titleOrDescription.value,
+                            author = author.value,
+                            genres = genres.value,
+                            minPrice = minPrice,
+                            maxPrice = maxPrice,
+                            sort = sort,
+                        )
+                    )
                 }
+                Div { Text("Searching...") }
             }
 
-            is Success -> {
-                Column(Modifier.gap(1.cssRem)) {
-                    val books = (state as Success).books
-                    books.forEach { book ->
-                        var isBookInCart by remember { mutableStateOf(CartStore.contains(book)) }
-                        BookItem(book, isBookInCart) {
-                            isBookInCart = !isBookInCart
-                            if (isBookInCart) CartStore.add(book)
-                            else CartStore.remove(book)
-                        }
+            is LoadFailed -> Div { Text(state.message.let { "Error: $it" }) }
+            is Loaded -> {
+                apiBooksState.value = Searching(state.books)
+                Div { Text("Books loaded, starting search...") }
+            }
+
+            is Searched -> Column(Modifier.gap(1.cssRem)) {
+                state.filteredBooks.forEach { book ->
+                    var isBookInCart by remember { mutableStateOf(CartStore.contains(book)) }
+                    BookItem(book, isBookInCart) {
+                        isBookInCart = !isBookInCart
+                        if (isBookInCart) CartStore.add(book)
+                        else CartStore.remove(book)
                     }
                 }
             }
@@ -233,7 +254,3 @@ fun HomePage() {
     }
 }
 
-@Composable
-fun SearchPanel() {
-
-}
