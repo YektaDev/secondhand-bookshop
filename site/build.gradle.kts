@@ -41,9 +41,7 @@ kotlin {
             implementation(compose.html.core)
             implementation(libs.kobweb.core)
             implementation(libs.kobweb.silk)
-            // This default template uses built-in SVG icons, but what's available is limited.
-            // Uncomment the following if you want access to a large set of font-awesome icons:
-            // implementation(libs.silk.icons.fa)
+            implementation(libs.silk.icons.fa)
             implementation(libs.kobwebx.markdown)
             implementation(libs.kotlinx.coroutines.core.js)
             implementation("io.ktor:ktor-client-js:2.3.10")
