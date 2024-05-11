@@ -207,9 +207,6 @@ fun HomePage() {
                             }
                         }
                     }
-                    Button("Search") {
-
-                    }
                 }
             }
         }
