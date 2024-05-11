@@ -10,6 +10,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.icons.fa.FaCartPlus
+import com.varabyte.kobweb.silk.components.icons.fa.FaMinus
 import com.varabyte.kobweb.silk.components.text.SpanText
 import dev.yekta.book4us.model.Book
 import org.jetbrains.compose.web.css.*
@@ -46,19 +47,35 @@ fun ColumnScope.BookItem(book: Book, isSelected: Boolean, onSelectClick: () -> U
             Box(Modifier.maxWidth(8.cssRem).minWidth(8.cssRem).maxHeight(12.cssRem).minHeight(12.cssRem)) {
                 Img(src = book.coverImage, attrs = Modifier.borderRadius(1.cssRem).fillMaxSize().toAttrs())
                 if (isHovered || isSelected) {
-                    var btnColor by remember { mutableStateOf(Colors.Purple) }
-                    FaCartPlus(
-                        Modifier
-                            .margin(.25.cssRem)
-                            .padding(0.5.cssRem)
-                            .backgroundColor(btnColor)
-                            .color(Colors.White)
-                            .borderRadius(1.cssRem)
-                            .cursor(Cursor.Pointer)
-                            .onClick { onSelectClick() }
-                            .onMouseEnter { btnColor = Colors.DarkOrchid }
-                            .onMouseLeave { btnColor = Colors.Purple }
-                    )
+                    if (isSelected) {
+                        var btnColor by remember { mutableStateOf(Colors.Transparent) }
+                        FaMinus(
+                            Modifier
+                                .margin(.25.cssRem)
+                                .padding(0.5.cssRem)
+                                .backgroundColor(btnColor)
+                                .color(Colors.White)
+                                .borderRadius(1.cssRem)
+                                .cursor(Cursor.Pointer)
+                                .onClick { onSelectClick() }
+                                .onMouseEnter { btnColor = Colors.Red }
+                                .onMouseLeave { btnColor = Colors.Transparent }
+                        )
+                    } else {
+                        var btnColor by remember { mutableStateOf(Colors.Purple) }
+                        FaCartPlus(
+                            Modifier
+                                .margin(.25.cssRem)
+                                .padding(0.5.cssRem)
+                                .backgroundColor(btnColor)
+                                .color(Colors.White)
+                                .borderRadius(1.cssRem)
+                                .cursor(Cursor.Pointer)
+                                .onClick { onSelectClick() }
+                                .onMouseEnter { btnColor = Colors.DarkOrchid }
+                                .onMouseLeave { btnColor = Colors.Purple }
+                        )
+                    }
                 }
             }
             Column(Modifier.padding(left = 1.cssRem)) {

@@ -18,6 +18,7 @@ import dev.yekta.book4us.components.layouts.PageLayout
 import dev.yekta.book4us.components.widgets.BookItem
 import dev.yekta.book4us.components.widgets.Button
 import dev.yekta.book4us.data.API
+import dev.yekta.book4us.data.CartStore
 import dev.yekta.book4us.model.BookLoadingState
 import dev.yekta.book4us.model.BookLoadingState.Loading
 import dev.yekta.book4us.model.BookLoadingState.Success
@@ -168,7 +169,14 @@ fun HomePage() {
             is Success -> {
                 Column(Modifier.gap(1.cssRem)) {
                     val books = (state as Success).books
-                    books.forEach { book -> BookItem(book, false, {}) }
+                    books.forEach { book ->
+                        var isBookInCart by remember { mutableStateOf(CartStore.contains(book)) }
+                        BookItem(book, isBookInCart) {
+                            isBookInCart = !isBookInCart
+                            if (isBookInCart) CartStore.add(book)
+                            else CartStore.remove(book)
+                        }
+                    }
                 }
             }
         }
