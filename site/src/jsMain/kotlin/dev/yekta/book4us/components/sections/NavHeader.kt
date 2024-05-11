@@ -2,7 +2,9 @@ package dev.yekta.book4us.components.sections
 
 import androidx.compose.runtime.*
 import com.varabyte.kobweb.browser.dom.ElementTarget
+import com.varabyte.kobweb.compose.css.functions.blur
 import com.varabyte.kobweb.compose.css.functions.clamp
+import com.varabyte.kobweb.compose.css.functions.saturate
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
+import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.animation.Keyframes
 import com.varabyte.kobweb.silk.components.animation.toAnimation
 import com.varabyte.kobweb.silk.components.graphics.Image
@@ -34,10 +37,13 @@ import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import dev.yekta.book4us.components.widgets.IconButton
 import dev.yekta.book4us.toSitePalette
+import kotlinx.browser.document
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.Div
+import kotlin.math.roundToInt
 
 val NavHeaderStyle by ComponentStyle.base {
-    Modifier.fillMaxWidth().padding(1.cssRem)
+    Modifier.backgroundColor(Colors.White.copy(alpha = 50)).fillMaxWidth().backdropFilter(saturate(180.percent), blur(5.px)).boxShadow(offsetY = 1.px, color = Colors.White).padding(1.cssRem)
 }
 
 @Composable
@@ -99,12 +105,14 @@ enum class SideMenuState {
 }
 
 @Composable
-fun NavHeader() {
+fun NavHeader() = Div(
+    Modifier.position(Position.Sticky).display(DisplayStyle.Block).top(0f.px).fillMaxWidth().toAttrs()
+) {
     Box(NavHeaderStyle.toModifier()) {
         Image(
             "/logo.svg",
             "Book4Us Logo",
-            Modifier.margin(top = .5.cssRem).height(4.5.cssRem).display(DisplayStyle.Block)
+            Modifier.margin(left = 2.cssRem, top = .5.cssRem, bottom = .5.cssRem).height(2.5.cssRem).display(DisplayStyle.Block)
         )
         Row(
             Modifier.fillMaxWidth().margin(top = 1.cssRem).padding(right = 1.cssRem),

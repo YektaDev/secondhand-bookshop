@@ -52,6 +52,13 @@ be able to effortlessly sort the books by title or price to find their desired b
 
 Comprehensive documentation is provided right here, to guide developers through the implementation details of Book4Us.
 
+### Top Navigation Bar
+
+The Book4Us website features a sticky top navigation bar that remains fixed at the top of the page as the user scrolls
+down. This navigation bar provides quick access to essential sections of the website, such as the Home page and About
+page, ensuring easy navigation and a seamless user experience. The menu items fold into a hamburger menu on smaller
+screens, optimizing the user experience for mobile devices.
+
 ## Pages
 
 The project consists of the following main pages:
