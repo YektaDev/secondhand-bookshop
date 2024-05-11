@@ -1,13 +1,13 @@
 package dev.yekta.book4us.pages
 
 import androidx.compose.runtime.*
+import com.varabyte.kobweb.compose.css.JustifySelf
 import com.varabyte.kobweb.compose.css.StyleVariable
 import com.varabyte.kobweb.compose.css.boxShadow
-import com.varabyte.kobweb.compose.css.functions.conicGradient
-import com.varabyte.kobweb.compose.css.functions.linearGradient
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
+import com.varabyte.kobweb.compose.foundation.layout.Spacer
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Color
@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.placeholder
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.*
+import kotlin.math.abs
 
 // Container that has a tagline and grid on desktop, and just the tagline on mobile
 val HeroContainerStyle by ComponentStyle {
@@ -70,11 +71,14 @@ private val booksState: MutableStateFlow<BookLoadingState> = MutableStateFlow(Lo
 
 private val scope = CoroutineScope(Dispatchers.Default)
 
+@Composable
+private fun String.rememberImaginaryPrice() = remember { "$" + abs(hashCode() % 76 + 24).toString() }
 
 @Composable
-fun SearchBox(modifier: Modifier = Modifier) {
+fun SearchBox(modifier: Modifier = Modifier, onSearch: (String) -> Unit = {}) {
     Div(modifier.fillMaxWidth().toAttrs()) {
         var searchInput by remember { mutableStateOf("") }
+        LaunchedEffect(searchInput) { onSearch(searchInput) }
         SearchInput(searchInput) {
             style {
                 backgroundColor(Colors.White)
@@ -107,11 +111,13 @@ fun HomePage() {
     scope.launch { booksState.value = API.getBooks() }
 
     PageLayout("Home") {
-        SearchBox(Modifier.margin(bottom = 2.cssRem))
+//        SearchBox(Modifier.margin(bottom = 2.cssRem)) { query ->
+//            scope.launch { booksState.value = API.getBooks(query) }
+//        }
 
         val state by booksState.collectAsState()
         when (state) {
-            Loading -> {
+            is Loading -> {
                 Div { Text("Loading...") }
             }
 
@@ -146,20 +152,41 @@ fun HomePage() {
                                     attrs = Modifier.borderRadius(1.cssRem).width(8.cssRem).height(12.cssRem).toAttrs()
                                 )
                                 Column(Modifier.padding(left = 1.cssRem)) {
-                                    SpanText(
-                                        book.title,
+                                    Div(
                                         Modifier
-                                            .fontWeight(500)
-                                            .fontSize(1.25.cssRem)
-                                            .textShadow(
-                                                1.px,
-                                                1.px,
-                                                blurRadius = 0.08.cssRem,
-                                                color = Colors.Gray.copy(alpha = 50)
-                                            )
                                             .fillMaxWidth()
-                                            .padding(right = 1.cssRem, bottom = 1.cssRem)
-                                    )
+                                            .display(DisplayStyle.Flex)
+                                            .alignItems(AlignItems.Center)
+                                            .margin(bottom = .5.cssRem)
+                                            .toAttrs()
+                                    ) {
+                                        SpanText(
+                                            book.title,
+                                            Modifier
+                                                .fontWeight(200)
+                                                .fontSize(1.25.cssRem)
+                                                .textShadow(
+                                                    1.px,
+                                                    1.px,
+                                                    blurRadius = 0.08.cssRem,
+                                                    color = Colors.Gray.copy(alpha = 50)
+                                                )
+                                                .fillMaxWidth()
+                                                .padding(right = 1.cssRem)
+                                                .flexGrow(1)
+                                        )
+                                        Spacer()
+                                        SpanText(
+                                            book.title.rememberImaginaryPrice(),
+                                            Modifier
+                                                .color(Colors.RebeccaPurple)
+                                                .padding(right = .5.cssRem)
+                                                .fontSize(1.2.cssRem)
+                                                .fontWeight(200)
+                                                .letterSpacing(0.1.cssRem)
+                                                .justifySelf(JustifySelf.SelfEnd)
+                                        )
+                                    }
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier.fillMaxWidth(),
