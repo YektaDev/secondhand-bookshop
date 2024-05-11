@@ -7,6 +7,7 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
+import dev.yekta.book4us.components.modifier.systemFontFamily
 import org.jetbrains.compose.web.css.AlignItems
 import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.JustifyContent
@@ -31,16 +32,7 @@ fun Button(text: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
             .cursor(Cursor.Pointer)
             .onMouseEnter { color = Colors.DarkOrchid }
             .onMouseLeave { color = Colors.MediumPurple }
-            .fontFamily(
-                "system-ui",
-                "-apple-system",
-                "BlinkMacSystemFont",
-                "Segoe UI",
-                "Roboto",
-                "Helvetica Neue",
-                "Arial",
-                "sans-serif"
-            )
+            .systemFontFamily()
             .onClick { onClick() }
             .toAttrs()
     ) { Text(text) }

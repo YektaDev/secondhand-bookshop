@@ -19,8 +19,12 @@ import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Span
 import kotlin.math.abs
 
+val Book.price
+    @Composable
+    get() = remember(title) { abs(title.hashCode() % 76 + 24) }
+
 @Composable
-private fun String.rememberImaginaryPrice() = remember { "$" + abs(hashCode() % 76 + 24).toString() }
+private fun Book.rememberImaginaryPrice() = "$$price"
 
 @Composable
 fun ColumnScope.BookItem(book: Book, isSelected: Boolean, onSelectClick: () -> Unit) {
@@ -104,7 +108,7 @@ fun ColumnScope.BookItem(book: Book, isSelected: Boolean, onSelectClick: () -> U
                     )
                     Spacer()
                     SpanText(
-                        book.title.rememberImaginaryPrice(),
+                        book.rememberImaginaryPrice(),
                         Modifier
                             .color(Colors.RebeccaPurple)
                             .padding(right = .5.cssRem)
