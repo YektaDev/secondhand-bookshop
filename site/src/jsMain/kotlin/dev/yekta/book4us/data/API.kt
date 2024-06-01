@@ -12,8 +12,7 @@ import org.w3c.dom.get
 import org.w3c.dom.set
 
 object API {
-    private const val API_URL = "https://freetestapi.com/api/v1/books"
-
+    private const val API_URL = "http://localhost:8080/api/books"
     private val client = HttpClient()
 
     private val json = Json {

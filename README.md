@@ -126,19 +126,14 @@ Press `Q` in the terminal to gracefully stop the server.
 
 ### Exporting the Project
 
-To export the final static output, shutdown the development server and then export the project using:
+To export the final fullstack output, shutdown the development server and then export the project using:
 
 ```bash
-$ kobweb export --layout static
+$ kobweb export --layout fullstack
 ```
 
 When finished, you can run a Kobweb server in production mode to test it.
 
 ```bash
-$ kobweb run --env prod --layout static
+$ kobweb run --env prod --layout fullstack
 ```
-
-The above export generates a layout which is compatible with any static hosting provider of your choice, such as
-GitHub Pages, Netlify, Firebase, etc. There is also a more powerful export option to create a fullstack server,
-but as the additional power provided by that approach is not needed by most users and comes with more expensive
-hosting costs, it is not demonstrated in this project.

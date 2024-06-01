@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS Book (
+    id INTEGER PRIMARY KEY,
+    author TEXT NOT NULL,
+    cover_image TEXT NOT NULL,
+    description TEXT NOT NULL,
+    publication_year TEXT NOT NULL,
+    title TEXT NOT NULL,
+    genres TEXT NOT NULL
+);
+
+selectAll:
+SELECT
+    id,
+    author,
+    cover_image,
+    description,
+    publication_year,
+    title,
+    genres
+FROM Book;

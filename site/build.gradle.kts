@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.kobwebx.markdown)
     alias(libs.plugins.kotlinx.serialization)
+    id("app.cash.sqldelight") version "2.0.2"
 }
 
 group = "dev.yekta.book4us"
@@ -24,10 +25,16 @@ kobweb {
     }
 }
 
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("dev.yekta.book4us")
+        }
+    }
+}
+
 kotlin {
-    // This example is frontend only. However, for a fullstack app, you can uncomment the includeServer parameter
-    // and the `jvmMain` source set below.
-    configAsKobwebApplication("book4us" /*, includeServer = true*/)
+    configAsKobwebApplication("book4us", includeServer = true)
 
     sourceSets {
         commonMain.dependencies {
@@ -47,9 +54,10 @@ kotlin {
             implementation("io.ktor:ktor-client-js:2.3.10")
         }
 
-        // Uncomment the following if you pass `includeServer = true` into the `configAsKobwebApplication` call.
-//        jvmMain.dependencies {
-//            compileOnly(libs.kobweb.api) // Provided by Kobweb backend at runtime
-//        }
+        jvmMain.dependencies {
+            compileOnly(libs.kobweb.api) // Provided by Kobweb backend at runtime
+            implementation("org.xerial:sqlite-jdbc:3.46.0.0")
+            implementation("app.cash.sqldelight:sqlite-driver:2.0.2")
+        }
     }
 }

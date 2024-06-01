@@ -1,3 +1,5 @@
+/site/data.db
+
 # General ignores
 .DS_Store
 build
