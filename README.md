@@ -1,5 +1,7 @@
 # Book4Us
 
+![Screenshot](./screenshots/screenshot.png)
+
 Welcome to Book4Us, an asynchronous second-hand bookshop that showcases the power of Kotlin and modern web
 technologies. This project demonstrates the use of a different asynchronous programming technique than the usual
 techniques used in JavaScript-based technologies. This technique is using Coroutines. It's extremely powerful and keeps
@@ -129,11 +131,11 @@ Press `Q` in the terminal to gracefully stop the server.
 To export the final fullstack output, shutdown the development server and then export the project using:
 
 ```bash
-$ kobweb export --layout fullstack
+$ kobweb export
 ```
 
 When finished, you can run a Kobweb server in production mode to test it.
 
 ```bash
-$ kobweb run --env prod --layout fullstack
+$ kobweb run --env prod
 ```
