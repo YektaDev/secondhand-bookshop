@@ -2,23 +2,20 @@
 
 ![Screenshot](./screenshots/screenshot.png)
 
-Welcome to Book4Us, an asynchronous second-hand bookshop that showcases the power of Kotlin and modern web
-technologies. This project demonstrates the use of a different asynchronous programming technique than the usual
-techniques used in JavaScript-based technologies. This technique is using Coroutines. It's extremely powerful and keeps
-the code simple.
+Welcome to **Book4Us**, a simple fullstack bookshop demo.
 
 ## Project Overview
 
-Book4Us is built using a combination of cutting-edge technologies:
+Book4Us is powered by:
 
 + **Ktor Client:** A powerful HTTP client for Kotlin that enables seamless communication with the remote server to fetch
   book data.
-+ **Kotlin Serialization:** A modern serialization library for Kotlin that simplifies the parsing and serialization of
-  JSON data.
++ **Kotlin Serialization (JSON):** A modern serialization library for Kotlin that simplifies the parsing and
+  serialization of JSON data.
 + **Kotlin Coroutines:** A concurrency framework for Kotlin that allows for efficient and expressive asynchronous
   programming.
-+ **Compose HTML:** A port of Compose Multiplatform that targets HTML as the output, enabling the creation of dynamic
-  and interactive web pages.
++ **Compose HTML:** A not very well-known port of Compose Multiplatform that targets HTML as the output, enabling the
+  creation of dynamic and interactive web pages.
 + **Kobweb:** A modern, Kotlin-based web framework that leverages the power of Compose HTML for building web
   applications.
 
