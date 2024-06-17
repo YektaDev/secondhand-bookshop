@@ -18,6 +18,9 @@ Book4Us is powered by:
   creation of dynamic and interactive web pages.
 + **Kobweb:** A modern, Kotlin-based web framework that leverages the power of Compose HTML for building web
   applications.
++ **SQLDelight:** A powerful library for generating typesafe Kotlin APIs from SQL statements, ensuring compile-time
+  verification of schema, statements, and migrations, and offering enhanced IDE features for seamless SQL writing and
+  maintenance.
 
 ## Key Features
 
